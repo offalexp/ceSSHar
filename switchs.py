@@ -1,4 +1,3 @@
-from django.db import models
 
 class  Switch(models.Model):
     ip = models.CharField(max_length=16)
