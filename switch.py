@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 from claseCrassh import claseCrassh
+from clasePuerto import clasePuerto
 
 class Switch(object):
    
@@ -34,6 +35,7 @@ class Switch(object):
         else:
             self.hostname = nombre
             self.conectado = True
+            #  aqui habria que generar la coleccion de puertos
         return None
     def traerInformacion(self):
         # carga los datos del switch a partir de lo que obtenga del mismo
