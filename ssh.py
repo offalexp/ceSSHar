@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # coding=utf-8
+
+# requisitos: 
+# bottle
+
 try:
     import logging
-    from claseCrassh import clsCrassh
+    from claseCrassh import claseCrassh
     import logging.handlers
     import itertools
     import configparser
@@ -15,7 +19,7 @@ except Exception as e:
 
 class SwVerif(object):       # en Python todas las clases heredan de object
     puertos = []
-    conexion = clsCrassh()
+    conexion = claseCrassh()
     estadoPuertos = dict()
     _ARCHIVO_CONFIG = 'swOffal.ini'
     DIRECTORIO_CONFIG = "config"
@@ -23,7 +27,6 @@ class SwVerif(object):       # en Python todas las clases heredan de object
     DIRECTORIO_LOG = "logs"
     TAMANIO_LOG = 200000 # en bytes
     CUANTOS_LOGS_GUARDO = 20
-    @route('/verEstadoPuertos')
 
     def __init__(self):         # este es el constructor, el metodo que se llama al instanciar el objeto
         self.config = configparser.ConfigParser()
@@ -95,7 +98,7 @@ class SwVerif(object):       # en Python todas las clases heredan de object
         # para ese equipo en el archivo de configuracion
         self.puertos = [e.strip() for e in self.config.get(equipo, "puertos").split(',')]
     def agregarPuerto(self, nombrePuerto):
-        print(puertos)
+        print(self.puertos)
         # recibe un nombre de puerto y lo agrega a la lista de verificacion
         self.puertos.append(nombrePuerto)
     def conectar(self, equipo):
