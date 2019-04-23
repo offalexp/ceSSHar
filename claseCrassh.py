@@ -27,7 +27,7 @@ import paramiko             # SSH
 # pylint: disable=C0301
 
 
-class clsCrassh(object):
+class claseCrassh(object):
 
     # Global variables
     crassh_version = "2.8"      # Version Control in a Variable
@@ -45,7 +45,8 @@ class clsCrassh(object):
     """
     def __init__(self):
         return None
-
+    def print_help(self):
+        return None
     def send_command(self, command="show ver", hostname="Switch", bail_timeout=60):
         """Sending commands to a switch, router, device, whatever!
             Args:
@@ -121,7 +122,7 @@ class clsCrassh(object):
             print("  \"%s\" tripped the do no harm sensor => %s" % (command, error))
             print("\n To force the use of dangerous things, use -X")
             self.print_help()
-
+    
     def isgroupreadable(self, filepath):
         """Checks if a file is *Group* readable
 
@@ -232,10 +233,10 @@ class clsCrassh(object):
             if thisline[0].strip() == "username":
                 username = thisline[1].strip()
             if thisline[0].strip() == "password":
-                if isgroupreadable(filepath):
+                if self.isgroupreadable(filepath):
                     print("** Password not read from %s - file is GROUP readable ** " % filepath)
                 else:
-                    if isotherreadable(filepath):
+                    if self.isotherreadable(filepath):
                         print("** Password not read from %s - file is WORLD readable **"% filepath)
                     else:
                         password = thisline[1].strip()
@@ -357,7 +358,7 @@ class clsCrassh(object):
     def disconnect(self):
         """Disconnect an SSH Session
         Crassh wrapper for paramiko disconnect
-        No Argumanets, disconnects the current global variable ``remote_conn_pre``
+        No Arguments, disconnects the current global variable ``remote_conn_pre``
         """
         self.remote_conn_pre.close()
 
@@ -396,16 +397,16 @@ class clsCrassh(object):
             myopts, args = getopt.getopt(sys.argv[1:], "c:s:t:T:d:A:U:P:B:b:E:hpwXeQ")
         except getopt.GetoptError as e:
             print("\n ERROR: %s" % str(e))
-            print_help(2)
+            self.print_help()
 
         for o, a in myopts:
             if o == '-s':
                 sfile = a
-                switches = readtxtfile(sfile)
+                switches = self.readtxtfile(sfile)
 
             if o == '-c':
                 cfile = a
-                commands = readtxtfile(cfile)
+                commands = self.readtxtfile(cfile)
 
             if o == '-t':
                 bail_timeout = int(a)
@@ -415,7 +416,7 @@ class clsCrassh(object):
 
             if o == '-h':
                 print("\n Nick\'s Cisco Remote Automation via Secure Shell- Script, or C.R.A.SSH for short!")
-                print_help()
+                self.print_help()
 
             if o == '-p':
                 writeo = False
@@ -486,7 +487,7 @@ class clsCrassh(object):
         """
         if play_safe:
             for command in commands:
-                do_no_harm(command)
+                self.do_no_harm(command)
         else:
             print("\n--\n Do no Harm checking DISABLED! \n--\n")
 
@@ -549,18 +550,18 @@ class clsCrassh(object):
                 sysexit = False
 
             if enable:
-                hostname = connect(switch, username, password, enable, enable_password, sysexit, connect_timeout)
+                hostname = self.connect(switch, username, password, enable, enable_password, sysexit, connect_timeout)
             else:
-                hostname = connect(switch, username, password, False, "", sysexit, connect_timeout)
+                hostname = self.connect(switch, username, password, False, "", sysexit, connect_timeout)
 
             if isinstance(hostname, bool): # Connection failed, function returned False
                 if backup_credz:
                     sysexit = tmp_sysexit # put it back, so fail or not (-Q) works as expected on backup credz
                     print("Trying backup credentials")
                     if backup_enable:
-                        hostname = connect(switch, backup_username, backup_password, enable, backup_enable_password, sysexit, connect_timeout)
+                        hostname = self.connect(switch, backup_username, backup_password, enable, backup_enable_password, sysexit, connect_timeout)
                     else:
-                        hostname = connect(switch, backup_username, backup_password, False, "", sysexit, connect_timeout)
+                        hostname = self.connect(switch, backup_username, backup_password, False, "", sysexit, connect_timeout)
 
                     if isinstance(hostname, bool): # Connection failed, function returned False
                         continue
@@ -579,7 +580,7 @@ class clsCrassh(object):
 
                 # Send the Command
                 print("%s: Running: %s" % (hostname, cmd))
-                output = send_command(cmd, hostname, bail_timeout)
+                output = self.send_command(cmd, hostname, bail_timeout)
 
                 # Print the output (optional)
                 if printo:
@@ -616,7 +617,7 @@ class clsCrassh(object):
 
 
             # Disconnect from SSH
-            disconnect()
+            self.disconnect()
 
             if writeo:
                 print("Switch %s done, output: %s" % (switch, filename))
