@@ -11,8 +11,8 @@ except Exception as e:
 
 def traeestado(swEelegido, swCmdElegido):
     config = configparser.ConfigParser()
-    config.__username = adminOffal
-    config.__password = L2las1sc)    
+    config.__username = "username"
+    config.__password = "password"    
     nombre = self.conexion.connect(, config.__username, config.__password)
     config.nombreEquipo = nombre
 
